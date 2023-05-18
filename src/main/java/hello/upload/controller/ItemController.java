@@ -71,13 +71,13 @@ public class ItemController {
         Item item = itemRepository.findById(itemId);
         String storeFileName = item.getAttachFile().getStoreFileName();
         String uploadFileName = item.getAttachFile().getUploadFileName();
-        UrlResource resource = new UrlResource("file:" +
-                fileStore.getFullPath(storeFileName));
-        log.info("uploadFileName={}", uploadFileName);
-        String encodedUploadFileName = UriUtils.encode(uploadFileName,
-                StandardCharsets.UTF_8);
-        String contentDisposition = "attachment; filename=\"" +
-                encodedUploadFileName + "\"";
+        UrlResource resource = new UrlResource("file:" + fileStore.getFullPath(storeFileName));
+
+        /*
+         파일을 눌러서 다운로드 해주려면 헤더 부분에 "attachment; filename=을 넣어줘야 다운로드가 된다.
+        * */
+        String encodedUploadFileName = UriUtils.encode(uploadFileName, StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=\"" + encodedUploadFileName + "\"";
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
